@@ -1,6 +1,6 @@
 module github.com/dgtyPedro/listing-service-receipeit
 
-go 1.21
+go 1.19
 
 require github.com/labstack/echo/v4 v4.10.2
 
