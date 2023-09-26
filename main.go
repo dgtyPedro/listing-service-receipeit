@@ -6,6 +6,7 @@ import (
     "net/http"
     "os"
     "log"
+    "fmt"
 
     "github.com/redis/go-redis/v9"
     "github.com/labstack/echo/v4"
@@ -34,6 +35,11 @@ func goDotEnvVariable(key string) string {
 }
 
 func deleteRecipeByKey(ctx context.Context, key string) error {
+    client := redis.NewClient(&redis.Options{
+        Addr:     goDotEnvVariable("REDIS_ADDRESS"),
+        Password: goDotEnvVariable("REDIS_PASSWORD"),
+        DB:       0,
+    })
     _, err := client.HDel(ctx, "recipes", key).Result()
     return err
 }
@@ -61,6 +67,11 @@ func createRecipe(recipe Recipe, ctx context.Context) error {
 }
 
 func findRecipeByKey(ctx context.Context, key string) (Recipe, error) {
+    client := redis.NewClient(&redis.Options{
+        Addr:     goDotEnvVariable("REDIS_ADDRESS"),
+        Password: goDotEnvVariable("REDIS_PASSWORD"),
+        DB:       0,
+    })
     val, err := client.HGet(ctx, "recipes", key).Result()
     if err != nil {
         return Recipe{}, err
@@ -75,6 +86,11 @@ func findRecipeByKey(ctx context.Context, key string) (Recipe, error) {
 }
 
 func updateRecipeByKey(ctx context.Context, key string, updatedRecipe Recipe) error {
+    client := redis.NewClient(&redis.Options{
+        Addr:     goDotEnvVariable("REDIS_ADDRESS"),
+        Password: goDotEnvVariable("REDIS_PASSWORD"),
+        DB:       0,
+    })
     exists, err := client.HExists(ctx, "recipes", key).Result()
     if err != nil {
         return err
